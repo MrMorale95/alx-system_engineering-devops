@@ -1,2 +1,2 @@
 #!/bin/bash
-USER="MyUser"; echo "hello $USER"
+env USER="Franklin" bash -c 'echo "hello $USER"'
