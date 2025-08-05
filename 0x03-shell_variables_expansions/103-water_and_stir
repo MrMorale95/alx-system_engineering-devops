@@ -1,2 +1,2 @@
 #!/bin/bash
-echo $(( $(echo $WATER | tr 'water' '01234') + $(echo $STIR | tr 'stir.' '01234') )) | tr '0123456789' 'bestchol'
+tr wate 0-4<<<$WATER|tr stir 0-3<<<$STIR|dc -e "?[[bestchol]P]sN`tr bestchol 0-7`r?+rNp"
