@@ -1,2 +1,2 @@
 #!/bin/bash
-echo shtbeolhc
+echo $(( $(echo "$WATER" | tr 'ewatr' 01234) + $(echo "$STIR" | tr 'trsti.' 012345) )) | tr 0123456789 'bestcholh'
