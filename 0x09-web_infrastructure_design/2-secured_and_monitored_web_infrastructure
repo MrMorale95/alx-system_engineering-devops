@@ -1,0 +1,86 @@
+# Task: Secure and Monitored Web Infrastructure
+#### By Franklin Zyambo
+
+## 🌐 Overview
+
+In this task, we design a **secure and monitored web infrastructure** that hosts `www.foobar.com`. This setup builds upon the previous task by introducing **security (firewalls, HTTPS)** and **observability (monitoring clients)**.
+
+---
+
+## 🧱 Infrastructure Components
+
+| Component                | Purpose                                                                 |
+|--------------------------|-------------------------------------------------------------------------|
+| **3 Firewalls**          | Secure each critical point: Load Balancer, Web Servers, and Database.   |
+| **SSL Certificate**      | Encrypt all traffic between user and the site using HTTPS.              |
+| **3 Monitoring Clients** | Collect logs and metrics from each server for visibility and alerts.    |
+| **HAProxy Load Balancer**| Routes traffic to backend servers using round-robin or other strategies.|
+| **2 Web/App Servers**    | Serve static/dynamic content and run application logic.                 |
+| **MySQL DB (Primary)**   | Handles persistent data storage (write-enabled).                        |
+
+---
+
+## 🔐 Why Add Each New Element?
+
+### 🔥 Firewalls (3 total)
+- **Why:** Each firewall protects a layer of the stack:
+  - **Firewall 1:** Protects the **load balancer** from external attacks.
+  - **Firewall 2:** Protects **web/app servers** from unauthorized internal access.
+  - **Firewall 3:** Protects the **MySQL database** from any non-approved source.
+
+### 🔒 SSL Certificate (HTTPS)
+- **Why:** Ensures **data is encrypted** in transit, preventing eavesdropping, tampering, and MITM attacks.
+
+### 📈 Monitoring Clients (Sumologic or others)
+- **Why:** Visibility into **health, performance, traffic, logs**, and early detection of failures.
+- **How:** Agents (e.g., Sumologic collector, Prometheus Node Exporter) run on each server, collect metrics, and push them to a central monitoring dashboard.
+
+---
+
+## 🧭 Request Flow (Secure + Monitored)
+
+1. User accesses `https://www.foobar.com`.
+2. DNS A record resolves to **load balancer IP**.
+3. SSL terminates at the **load balancer**, which forwards the request over internal HTTP.
+4. Load balancer chooses a **web/app server** using round-robin.
+5. The selected server serves the content, fetching data from the **MySQL DB** if needed.
+6. Monitoring agents log request metrics (e.g., QPS), CPU usage, and errors in real-time.
+
+---
+
+## 📊 Monitoring QPS (Queries Per Second)
+
+To monitor QPS:
+1. Enable logging at the **web server level (Nginx)**.
+2. Use a tool (like Prometheus + Grafana or Sumologic) to:
+   - Collect request logs.
+   - Parse them by timestamp.
+   - Visualize requests per second in a dashboard.
+
+---
+
+## ⚠️ Limitations and Risks
+
+### 1. **SSL Termination at Load Balancer**
+- **Problem:** If SSL ends at the load balancer, the **internal traffic is unencrypted**, risking data leaks if the internal network is compromised.
+- **Solution:** Use **end-to-end encryption** (re-encrypt traffic between load balancer and backend servers).
+
+### 2. **Single MySQL Server for Writes**
+- **Problem:** If the primary DB fails, no writes can occur → application breakage.
+- **Solution:** Use **automatic failover with DB replication** and **multi-primary clustering (e.g., Galera)**.
+
+### 3. **All-in-One Server Roles**
+- **Problem:** Servers running **Nginx + App + DB** lead to:
+   - Resource contention (e.g., DB competing with web app).
+   - Security risks (exposing DB to HTTP server).
+   - Difficult scaling.
+- **Solution:** Separate concerns: use **dedicated database servers**, **stateless app servers**, and scale them independently.
+
+---
+
+## 🖼️ Architecture Diagram (Text Placeholder)
+
+> Replace the link below with your actual diagram screenshot
+
+**Diagram Screenshot:** https://imgur.com/a/LIA6JCP
+
