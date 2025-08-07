@@ -1,0 +1,66 @@
+# Task: Simple Web Stack 
+#### by Franklin Zyambo
+
+## 📌 Scenario
+
+A user opens a browser and navigates to `www.foobar.com`. This request reaches a single server (IP: 8.8.8.8) that hosts a complete web stack including:
+
+- Web server: **Nginx**
+- Application server: **PHP-FPM / WSGI / etc.**
+- Application files: **Project codebase**
+- Database: **MySQL**
+
+---
+
+## 🧭 Flow of a Request
+
+1. **User requests** `www.foobar.com` in the browser.
+2. **DNS resolution** translates `www.foobar.com` (A record) to IP address `8.8.8.8`.
+3. The request reaches the **web server (Nginx)** on that IP.
+4. Nginx checks if it’s a static file or forwards it to the **application server**.
+5. The **application server** processes the logic, interacts with the **MySQL database** if needed.
+6. The response is passed back from app server → web server → user browser.
+
+---
+
+## ⚙️ Components Breakdown
+
+| Component              | Role                                                                 |
+|------------------------|----------------------------------------------------------------------|
+| **Server**             | A physical or virtual machine (Linux OS) that hosts the entire stack. |
+| **Domain Name**        | Human-readable alias (`foobar.com`) that maps to server IP.           |
+| **DNS Record (www)**   | An **A record** that maps `www.foobar.com` → `8.8.8.8`.                |
+| **Web Server (Nginx)** | Receives HTTP/HTTPS requests, serves static files or forwards to app. |
+| **Application Server** | Executes backend code to handle dynamic content.                      |
+| **Application Files**  | Source code of the website (PHP/Python/HTML/CSS/etc).                 |
+| **Database (MySQL)**   | Stores and manages persistent structured data.                        |
+| **Communication**      | The server and user communicate over the **TCP/IP** protocol using **HTTP** or **HTTPS**. |
+
+---
+
+## 📉 Weaknesses of This Architecture
+
+### 1. **Single Point of Failure (SPOF)**
+- Only one server – if it crashes, the entire site goes down.
+
+### 2. **Downtime During Maintenance**
+- Restarting the web or app server during deployment interrupts service.
+
+### 3. **No Scalability**
+- The setup cannot handle large traffic spikes.
+- No way to distribute load or auto-scale across multiple servers.
+
+---
+
+## 🧩 Acronyms
+
+- **LAMP**: Linux, Apache/Nginx, MySQL, PHP/Python
+- **SPOF**: Single Point of Failure
+- **QPS**: Queries Per Second – metric for measuring traffic or DB load
+
+---
+
+## 🖼️ Architecture Diagram
+
+>https://imgur.com/a/KkT8brp
+
