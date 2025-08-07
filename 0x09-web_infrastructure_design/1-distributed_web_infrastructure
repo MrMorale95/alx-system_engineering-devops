@@ -1,0 +1,97 @@
+# Task 1: Three-Server Web Infrastructure
+#### by Franklin Zyambo
+
+## 🌐 Scenario
+
+We are scaling from a single-server setup to a more reliable and scalable **three-server architecture** to host `www.foobar.com`.
+
+---
+
+## 🧱 Infrastructure Components
+
+| Component            | Role                                                                 |
+|----------------------|----------------------------------------------------------------------|
+| **Load Balancer**    | Distributes user traffic across multiple web/app servers.            |
+| **2 Servers**        | Each runs both **web server (Nginx)** and **application server**.    |
+| **Application Files**| Your backend codebase, deployed identically on both servers.         |
+| **Database (MySQL)** | Can be extended into a **Primary-Replica** cluster.                  |
+| **Domain Name**      | `www.foobar.com` DNS A record points to the IP of the load balancer. |
+
+---
+
+## ⚙️ Component Purpose & Explanation
+
+### 🔁 **Load Balancer (HAProxy)**
+- **Why Add It:** To prevent any single server from being overwhelmed and provide **redundancy**.
+- **Algorithm:** **Round Robin** – It cycles through backend servers, sending each new connection to the next server in line.
+- **Setup Type:** **Active-Active** – Both servers handle live traffic simultaneously.
+
+### 🖥️ **Two Web/App Servers**
+- Each handles frontend (via Nginx) and backend logic (via PHP-FPM, Gunicorn, etc.).
+- If one fails, the other can continue serving users.
+
+### 🗄️ **MySQL Database**
+- Can be configured as **Primary-Replica (Master-Slave)** for redundancy.
+
+---
+
+## 🔄 Active-Active vs Active-Passive
+
+| Setup Type      | Description |
+|------------------|-------------|
+| **Active-Active** | Both servers are live and handling traffic. Load balancer distributes load across both. |
+| **Active-Passive** | Only one server is live; the other is on standby. Traffic goes to standby if primary fails. |
+
+In this setup: **Active-Active** is used to maximize performance and availability.
+
+---
+
+## 🛢️ Primary-Replica Database Cluster
+
+| Role      | Description |
+|-----------|-------------|
+| **Primary Node** | Handles all **write** operations (INSERT, UPDATE, DELETE). |
+| **Replica Node(s)** | Handle **read-only** queries to offload traffic from the primary. |
+
+### How It Works:
+- The **Primary** sends real-time replication logs to the **Replica(s)**.
+- The **application** is configured to:
+  - Send **writes** to the **Primary**
+  - Send **reads** to the **Replica**
+
+---
+
+## 🧭 Flow of a Request
+
+1. User enters `www.foobar.com`.
+2. DNS A record maps to **load balancer IP**.
+3. **HAProxy** receives request and forwards it (Round Robin) to Server A or Server B.
+4. Server receives request via **Nginx**, forwards it to **app server**, fetches/updates **database** as needed.
+5. Response goes back to user.
+
+---
+
+## 📉 Limitations of This Infrastructure
+
+### ⚠️ Single Points of Failure (SPOF)
+- **Load Balancer** is a SPOF. If it fails, the whole system is down.
+- **Database Primary** is also a SPOF if replication is not promoted automatically on failure.
+
+### 🔐 Security Issues
+- **No firewall** to block unwanted ports/IPs.
+- **No HTTPS** means data is sent in plain text — vulnerable to MITM attacks.
+
+### 📉 No Monitoring
+- No visibility into:
+  - Server load
+  - Uptime/downtime
+  - Database health
+- Makes troubleshooting and proactive alerts impossible.
+
+---
+
+## 🖼️ Architecture Diagram (Text Representation)
+
+> Replace the link below with your actual diagram screenshot URL.
+
+**Diagram Image:** [View Architecture Diagram](https://imgur.com/a/abBFJj2)
